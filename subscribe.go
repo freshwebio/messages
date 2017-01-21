@@ -21,7 +21,7 @@ func identity() string {
 
 // Subscribe deals with setting up a new listener to events
 // published to a certain exchange.
-func Subscribe(exchange string, sessions chan chan AmqpSession, messages chan<- amqpMessage) {
+func Subscribe(exchange string, sessions chan chan AmqpSession, messages chan<- AmqpMessage) {
 	queue := identity()
 
 	for session := range sessions {
@@ -46,10 +46,10 @@ func Subscribe(exchange string, sessions chan chan AmqpSession, messages chan<- 
 		log.Printf("subscribed...")
 
 		for msg := range deliveries {
-			amqpMsg := amqpMessage{}
-			amqpMsg.body = msg.Body
-			amqpMsg.headers = msg.Headers
-			amqpMsg.contentType = msg.ContentType
+			amqpMsg := AmqpMessage{}
+			amqpMsg.Body = msg.Body
+			amqpMsg.Headers = msg.Headers
+			amqpMsg.ContentType = msg.ContentType
 			messages <- amqpMsg
 			sub.Ack(msg.DeliveryTag, false)
 		}

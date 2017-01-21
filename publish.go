@@ -8,11 +8,11 @@ import (
 
 // Publish deals with setting up a process to handle
 // publishing messages to an exchange.
-func Publish(exchange string, sessions chan chan AmqpSession, messages <-chan amqpMessage) {
+func Publish(exchange string, sessions chan chan AmqpSession, messages <-chan AmqpMessage) {
 	var (
 		running bool
 		reading = messages
-		pending = make(chan amqpMessage, 1)
+		pending = make(chan AmqpMessage, 1)
 		confirm = make(chan amqp.Confirmation, 1)
 	)
 
@@ -31,19 +31,19 @@ func Publish(exchange string, sessions chan chan AmqpSession, messages <-chan am
 
 	Publish:
 		for {
-			var body amqpMessage
+			var body AmqpMessage
 			select {
 			case confirmed := <-confirm:
 				if !confirmed.Ack {
-					log.Printf("nack message %d, body: %q", confirmed.DeliveryTag, string(body.body))
+					log.Printf("nack message %d, body: %q", confirmed.DeliveryTag, string(body.Body))
 				}
 				reading = messages
 
 			case body = <-pending:
 				err := pub.Publish(exchange, "", false, false, amqp.Publishing{
-					ContentType:  body.contentType,
-					Headers:      body.headers,
-					Body:         body.body,
+					ContentType:  body.ContentType,
+					Headers:      body.Headers,
+					Body:         body.Body,
 					DeliveryMode: amqp.Transient,
 					Priority:     0,
 				})

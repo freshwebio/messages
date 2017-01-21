@@ -23,12 +23,12 @@ func (s AmqpSession) Close() error {
 	return s.Connection.Close()
 }
 
-// AMQP message with headers and content type to work as an intermediary
+// AmqpMessage with headers and content type to work as an intermediary
 // for application specific data structures.
-type amqpMessage struct {
-	headers     amqp.Table
-	body        []byte
-	contentType string
+type AmqpMessage struct {
+	Headers     amqp.Table
+	Body        []byte
+	ContentType string
 }
 
 // Redial continuously connects to the message broker
