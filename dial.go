@@ -32,7 +32,7 @@ type AmqpMessage struct {
 }
 
 // Redial continuously connects to the message broker
-// existing when it can no longer make the connection.
+// exiting when it can no longer make the connection.
 func Redial(ctx context.Context, exchange string, url string) chan chan AmqpSession {
 	sessions := make(chan chan AmqpSession)
 	go func() {

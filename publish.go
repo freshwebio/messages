@@ -25,6 +25,8 @@ func Publish(exchange string, sessions chan chan AmqpSession, messages <-chan Am
 			// Confirms are not supported, simulate by ensuring we
 			// provide a negative acknowledgement.
 			close(confirm)
+		} else {
+			pub.NotifyPublish(confirm)
 		}
 
 		log.Printf("publishing...")
@@ -59,7 +61,7 @@ func Publish(exchange string, sessions chan chan AmqpSession, messages <-chan Am
 				if !running {
 					return
 				}
-				// Work on pending deliveries unit acknowledged.
+				// Work on pending deliveries until acknowledged.
 				pending <- body
 				reading = nil
 			}
